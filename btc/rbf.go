@@ -429,7 +429,7 @@ func (w *batcherWallet) createRBFTx(
 	if totalSpendsToMeValue+totalExistingValue < DustAmount+totalSendAmount+int64(fee) {
 		previousUTXOs := utxos
 		err := withContextTimeout(c, DefaultAPITimeout, func(ctx context.Context) error {
-			utxos, _, err = w.getUtxosWithFee(ctx, previousUTXOs, totalSendAmount+int64(fee)-(totalSpendsToMeValue+totalExistingValue), int64(feeRate), avoidUtxos)
+			utxos, _, err = w.getUtxosWithFee(ctx, previousUTXOs, totalSendAmount+int64(fee)+DustAmount-(totalSpendsToMeValue+totalExistingValue), int64(feeRate), avoidUtxos)
 			return err
 		})
 		if err != nil {
