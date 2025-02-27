@@ -378,15 +378,11 @@ func (w *batcherWallet) processBatch() {
 	if err := w.createBatch(); err != nil {
 		if !errors.Is(err, ErrBatchParametersNotMet) {
 			w.logger.Error("failed to create batch", zap.Error(err))
-		} else {
-			w.logger.Info("waiting for new batch")
 		}
 
 		if err := w.updateBatchFeeRate(); err != nil {
 			if !errors.Is(err, ErrFeeUpdateNotNeeded) {
 				w.logger.Error("failed to update fee rate", zap.Error(err))
-			} else {
-				w.logger.Info("fee update skipped")
 			}
 		} else {
 			w.logger.Info("batch fee updated", zap.String("strategy", string(w.opts.Strategy)))
@@ -472,7 +468,7 @@ func (w *batcherWallet) validateBatchRequest(ctx context.Context, strategy Strat
 	var sacpsIn int64
 	var sacpOut int64
 	err = withContextTimeout(ctx, DefaultAPITimeout, func(ctx context.Context) error {
-		sacpsIn, sacpOut, err = getSACPAmounts(ctx, sacps, w.indexer)
+		sacpsIn, sacpOut, _, err = getSACPAmounts(ctx, sacps, w.indexer)
 		return err
 	})
 
